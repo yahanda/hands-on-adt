@@ -2,58 +2,40 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "IotHubs_iot_hcm_handson_connectionString": {
-            "type": "SecureString"
-        },
-        "IotHubs_iot_hcm_handson_containerName": {
-            "type": "SecureString"
-        },
-        "sites_func_hcm_handson_name": {
-            "defaultValue": "func-hcm-handson",
+        "sites_func_handson_name": {
+            "defaultValue": "func-yourname-handson",
             "type": "String"
         },
-        "Clusters_adxhcmhandson_name": {
-            "defaultValue": "adxhcmhandson",
+        "Clusters_adxhandson_name": {
+            "defaultValue": "adxyournamehandson",
             "type": "String"
         },
-        "IotHubs_iot_hcm_handson_name": {
-            "defaultValue": "iot-hcm-handson",
+        "IotHubs_iot_handson_name": {
+            "defaultValue": "iot-yourname-handson",
             "type": "String"
         },
         "systemTopics_systemtopic_name": {
             "defaultValue": "systemtopic",
             "type": "String"
         },
-        "namespaces_evh_hcm_handson_name": {
-            "defaultValue": "evh-hcm-handson",
+        "namespaces_evh_handson_name": {
+            "defaultValue": "evh-yourname-handson",
             "type": "String"
         },
-        "components_func_hcm_handson_name": {
-            "defaultValue": "func-hcm-handson",
+        "components_func_handson_name": {
+            "defaultValue": "func-yourname-handson",
             "type": "String"
         },
-        "serverfarms_ASP_HCMADTHandson_bc68_name": {
-            "defaultValue": "ASP-HCMADTHandson-bc68",
+        "serverfarms_ASP_ADTHandson_name": {
+            "defaultValue": "ASP-yournameADTHandson",
             "type": "String"
         },
-        "storageAccounts_hcmadthandson8256_name": {
-            "defaultValue": "hcmadthandson8256",
+        "storageAccounts_adthandson_name": {
+            "defaultValue": "yournameadthandson",
             "type": "String"
         },
-        "digitalTwinsInstances_adt_hcm_handson_name": {
-            "defaultValue": "adt-hcm-handson",
-            "type": "String"
-        },
-        "actionGroups_Application_Insights_Smart_Detection_name": {
-            "defaultValue": "Application Insights Smart Detection",
-            "type": "String"
-        },
-        "smartdetectoralertrules_failure_anomalies___func_hcm_handson_name": {
-            "defaultValue": "failure anomalies - func-hcm-handson",
-            "type": "String"
-        },
-        "workspaces_DefaultWorkspace_180b8946_11f6_4b3d_a813_39be45ad51eb_EJP_externalid": {
-            "defaultValue": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/DefaultResourceGroup-EJP/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-180b8946-11f6-4b3d-a813-39be45ad51eb-EJP",
+        "digitalTwinsInstances_adt_handson_name": {
+            "defaultValue": "adt-yourname-handson",
             "type": "String"
         }
     },
@@ -62,7 +44,7 @@
         {
             "type": "Microsoft.Devices/IotHubs",
             "apiVersion": "2022-04-30-preview",
-            "name": "[parameters('IotHubs_iot_hcm_handson_name')]",
+            "name": "[parameters('IotHubs_iot_handson_name')]",
             "location": "japaneast",
             "sku": {
                 "name": "S1",
@@ -109,13 +91,6 @@
                         "isEnabled": true
                     }
                 },
-                "storageEndpoints": {
-                    "$default": {
-                        "sasTtlAsIso8601": "PT1H",
-                        "connectionString": "[parameters('IotHubs_iot_hcm_handson_connectionString')]",
-                        "containerName": "[parameters('IotHubs_iot_hcm_handson_containerName')]"
-                    }
-                },
                 "messagingEndpoints": {
                     "fileNotifications": {
                         "lockDurationAsIso8601": "PT1M",
@@ -142,7 +117,7 @@
         {
             "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
             "apiVersion": "2022-05-31",
-            "name": "[parameters('digitalTwinsInstances_adt_hcm_handson_name')]",
+            "name": "[parameters('digitalTwinsInstances_adt_handson_name')]",
             "location": "southeastasia",
             "identity": {
                 "type": "SystemAssigned"
@@ -155,7 +130,7 @@
         {
             "type": "Microsoft.EventHub/namespaces",
             "apiVersion": "2022-01-01-preview",
-            "name": "[parameters('namespaces_evh_hcm_handson_name')]",
+            "name": "[parameters('namespaces_evh_handson_name')]",
             "location": "Japan East",
             "sku": {
                 "name": "Standard",
@@ -173,58 +148,9 @@
             }
         },
         {
-            "type": "microsoft.insights/actionGroups",
-            "apiVersion": "2022-06-01",
-            "name": "[parameters('actionGroups_Application_Insights_Smart_Detection_name')]",
-            "location": "Global",
-            "properties": {
-                "groupShortName": "SmartDetect",
-                "enabled": true,
-                "emailReceivers": [],
-                "smsReceivers": [],
-                "webhookReceivers": [],
-                "eventHubReceivers": [],
-                "itsmReceivers": [],
-                "azureAppPushReceivers": [],
-                "automationRunbookReceivers": [],
-                "voiceReceivers": [],
-                "logicAppReceivers": [],
-                "azureFunctionReceivers": [],
-                "armRoleReceivers": [
-                    {
-                        "name": "Monitoring Contributor",
-                        "roleId": "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
-                        "useCommonAlertSchema": true
-                    },
-                    {
-                        "name": "Monitoring Reader",
-                        "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
-                        "useCommonAlertSchema": true
-                    }
-                ]
-            }
-        },
-        {
-            "type": "microsoft.insights/components",
-            "apiVersion": "2020-02-02",
-            "name": "[parameters('components_func_hcm_handson_name')]",
-            "location": "japaneast",
-            "kind": "web",
-            "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Redfield",
-                "Request_Source": "IbizaWebAppExtensionCreate",
-                "RetentionInDays": 90,
-                "WorkspaceResourceId": "[parameters('workspaces_DefaultWorkspace_180b8946_11f6_4b3d_a813_39be45ad51eb_EJP_externalid')]",
-                "IngestionMode": "LogAnalytics",
-                "publicNetworkAccessForIngestion": "Enabled",
-                "publicNetworkAccessForQuery": "Enabled"
-            }
-        },
-        {
             "type": "Microsoft.Kusto/Clusters",
             "apiVersion": "2022-07-07",
-            "name": "[parameters('Clusters_adxhcmhandson_name')]",
+            "name": "[parameters('Clusters_adxhandson_name')]",
             "location": "Japan East",
             "sku": {
                 "name": "Dev(No SLA)_Standard_E2a_v4",
@@ -257,7 +183,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2022-05-01",
-            "name": "[parameters('storageAccounts_hcmadthandson8256_name')]",
+            "name": "[parameters('storageAccounts_adthandson_name')]",
             "location": "japaneast",
             "sku": {
                 "name": "Standard_LRS",
@@ -292,7 +218,7 @@
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2022-03-01",
-            "name": "[parameters('serverfarms_ASP_HCMADTHandson_bc68_name')]",
+            "name": "[parameters('serverfarms_ASP_ADTHandson_name')]",
             "location": "Japan East",
             "sku": {
                 "name": "Y1",
@@ -321,20 +247,20 @@
             "name": "[parameters('systemTopics_systemtopic_name')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iot_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iot_handson_name'))]"
             ],
             "properties": {
-                "source": "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iot_hcm_handson_name'))]",
+                "source": "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iot_handson_name'))]",
                 "topicType": "Microsoft.Devices.IoTHubs"
             }
         },
         {
             "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
             "apiVersion": "2022-01-01-preview",
-            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/RootManageSharedAccessKey')]",
+            "name": "[concat(parameters('namespaces_evh_handson_name'), '/RootManageSharedAccessKey')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_handson_name'))]"
             ],
             "properties": {
                 "rights": [
@@ -347,10 +273,10 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs",
             "apiVersion": "2022-01-01-preview",
-            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/', parameters('namespaces_evh_hcm_handson_name'))]",
+            "name": "[concat(parameters('namespaces_evh_handson_name'), '/', parameters('namespaces_evh_handson_name'))]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_handson_name'))]"
             ],
             "properties": {
                 "messageRetentionInDays": 1,
@@ -361,10 +287,10 @@
         {
             "type": "Microsoft.EventHub/namespaces/networkRuleSets",
             "apiVersion": "2022-01-01-preview",
-            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/default')]",
+            "name": "[concat(parameters('namespaces_evh_handson_name'), '/default')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_handson_name'))]"
             ],
             "properties": {
                 "publicNetworkAccess": "Enabled",
@@ -376,10 +302,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/degradationindependencyduration')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/degradationindependencyduration')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -400,10 +326,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/degradationinserverresponsetime')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/degradationinserverresponsetime')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -424,10 +350,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/digestMailConfiguration')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/digestMailConfiguration')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -448,10 +374,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_billingdatavolumedailyspikeextension')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/extension_billingdatavolumedailyspikeextension')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -472,10 +398,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_canaryextension')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/extension_canaryextension')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -496,10 +422,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_exceptionchangeextension')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/extension_exceptionchangeextension')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -520,10 +446,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_memoryleakextension')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/extension_memoryleakextension')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -544,10 +470,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_securityextensionspackage')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/extension_securityextensionspackage')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -568,10 +494,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_traceseveritydetector')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/extension_traceseveritydetector')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -592,10 +518,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/longdependencyduration')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/longdependencyduration')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -616,10 +542,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/migrationToAlertRulesCompleted')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/migrationToAlertRulesCompleted')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -640,10 +566,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/slowpageloadtime')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/slowpageloadtime')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -664,10 +590,10 @@
         {
             "type": "microsoft.insights/components/ProactiveDetectionConfigs",
             "apiVersion": "2018-05-01-preview",
-            "name": "[concat(parameters('components_func_hcm_handson_name'), '/slowserverresponsetime')]",
+            "name": "[concat(parameters('components_func_handson_name'), '/slowserverresponsetime')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                "[resourceId('microsoft.insights/components', parameters('components_func_handson_name'))]"
             ],
             "properties": {
                 "ruleDefinitions": {
@@ -688,10 +614,10 @@
         {
             "type": "Microsoft.Kusto/Clusters/Databases",
             "apiVersion": "2022-07-07",
-            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb')]",
+            "name": "[concat(parameters('Clusters_adxhandson_name'), '/historydb')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhandson_name'))]"
             ],
             "kind": "ReadWrite",
             "properties": {
@@ -702,9 +628,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices",
             "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_adthandson_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_adthandson_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -723,9 +649,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/fileServices",
             "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_adthandson_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_adthandson_name'))]"
             ],
             "sku": {
                 "name": "Standard_LRS",
@@ -747,9 +673,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/queueServices",
             "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_adthandson_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_adthandson_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -760,9 +686,9 @@
         {
             "type": "Microsoft.Storage/storageAccounts/tableServices",
             "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "name": "[concat(parameters('storageAccounts_adthandson_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_adthandson_name'))]"
             ],
             "properties": {
                 "cors": {
@@ -773,16 +699,11 @@
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2022-03-01",
-            "name": "[parameters('sites_func_hcm_handson_name')]",
+            "name": "[parameters('sites_func_handson_name')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_HCMADTHandson_bc68_name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_ADTHandson_name'))]"
             ],
-            "tags": {
-                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
-                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
-                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
-            },
             "kind": "functionapp",
             "identity": {
                 "type": "SystemAssigned"
@@ -791,17 +712,17 @@
                 "enabled": true,
                 "hostNameSslStates": [
                     {
-                        "name": "[concat(parameters('sites_func_hcm_handson_name'), '.azurewebsites.net')]",
+                        "name": "[concat(parameters('sites_func_handson_name'), '.azurewebsites.net')]",
                         "sslState": "Disabled",
                         "hostType": "Standard"
                     },
                     {
-                        "name": "[concat(parameters('sites_func_hcm_handson_name'), '.scm.azurewebsites.net')]",
+                        "name": "[concat(parameters('sites_func_handson_name'), '.scm.azurewebsites.net')]",
                         "sslState": "Disabled",
                         "hostType": "Repository"
                     }
                 ],
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_HCMADTHandson_bc68_name'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_ADTHandson_name'))]",
                 "reserved": false,
                 "isXenon": false,
                 "hyperV": false,
@@ -833,16 +754,11 @@
         {
             "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/ftp')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/ftp')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
-            "tags": {
-                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
-                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
-                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
-            },
             "properties": {
                 "allow": true
             }
@@ -850,16 +766,11 @@
         {
             "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/scm')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/scm')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
-            "tags": {
-                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
-                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
-                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
-            },
             "properties": {
                 "allow": true
             }
@@ -867,16 +778,11 @@
         {
             "type": "Microsoft.Web/sites/config",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/web')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/web')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
-            "tags": {
-                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
-                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
-                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
-            },
             "properties": {
                 "numberOfWorkers": 1,
                 "defaultDocuments": [
@@ -897,7 +803,6 @@
                 "acrUseManagedIdentityCreds": false,
                 "logsDirectorySizeLimit": 35,
                 "detailedErrorLoggingEnabled": false,
-                "publishingUsername": "$func-hcm-handson",
                 "scmType": "None",
                 "use32BitWorkerProcess": true,
                 "webSocketsEnabled": false,
@@ -958,10 +863,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/09733a9594944c3ea743617c943582f4')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/09733a9594944c3ea743617c943582f4')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -977,10 +882,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/10a5f3090215439598ff6be336828d97')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/10a5f3090215439598ff6be336828d97')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -996,10 +901,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/2f75ac456e214f4bb98f8541d42edf57')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/2f75ac456e214f4bb98f8541d42edf57')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1015,10 +920,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/52575615c5f843ac8fbd3650f7afcc55')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/52575615c5f843ac8fbd3650f7afcc55')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1034,10 +939,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/599d6ab0cf5c43f1a223fcd3548ce587')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/599d6ab0cf5c43f1a223fcd3548ce587')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1053,10 +958,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/970442422d8146658a28bfb4dbdd1b72')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/970442422d8146658a28bfb4dbdd1b72')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1072,10 +977,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/de0a2b8129ee42c89366969771424297')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/de0a2b8129ee42c89366969771424297')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1091,10 +996,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/ed31f214bf6943a5b66f2f48ce5b0ed3')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/ed31f214bf6943a5b66f2f48ce5b0ed3')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1110,10 +1015,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/f96aaff3222c49e39d286c118bdec1a4')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/f96aaff3222c49e39d286c118bdec1a4')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1129,10 +1034,10 @@
         {
             "type": "Microsoft.Web/sites/deployments",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/fddc7a1ad3cb42a6bb33f37c2a85bcc9')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/fddc7a1ad3cb42a6bb33f37c2a85bcc9')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
                 "status": 4,
@@ -1148,60 +1053,22 @@
         {
             "type": "Microsoft.Web/sites/functions",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/IoTHubtoTwins')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/IoTHubtoTwins')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
-            ],
-            "properties": {
-                "script_root_path_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/site/wwwroot/IoTHubtoTwins/",
-                "script_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/site/wwwroot/bin/Functions.dll",
-                "config_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/site/wwwroot/IoTHubtoTwins/function.json",
-                "test_data_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/data/Functions/sampledata/IoTHubtoTwins.dat",
-                "href": "https://func-hcm-handson.azurewebsites.net/admin/functions/IoTHubtoTwins",
-                "config": {},
-                "language": "DotNetAssembly",
-                "isDisabled": false
-            }
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
+            ]
         },
         {
             "type": "Microsoft.Web/sites/hostNameBindings",
             "apiVersion": "2022-03-01",
-            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/', parameters('sites_func_hcm_handson_name'), '.azurewebsites.net')]",
+            "name": "[concat(parameters('sites_func_handson_name'), '/', parameters('sites_func_handson_name'), '.azurewebsites.net')]",
             "location": "Japan East",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_handson_name'))]"
             ],
             "properties": {
-                "siteName": "func-hcm-handson",
                 "hostNameType": "Verified"
-            }
-        },
-        {
-            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
-            "apiVersion": "2021-04-01",
-            "name": "[parameters('smartdetectoralertrules_failure_anomalies___func_hcm_handson_name')]",
-            "location": "global",
-            "dependsOn": [
-                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]",
-                "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
-            ],
-            "properties": {
-                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
-                "state": "Enabled",
-                "severity": "Sev3",
-                "frequency": "PT1M",
-                "detector": {
-                    "id": "FailureAnomaliesDetector"
-                },
-                "scope": [
-                    "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
-                ],
-                "actionGroups": {
-                    "groupIds": [
-                        "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
-                    ]
-                }
             }
         },
         {
@@ -1210,12 +1077,12 @@
             "name": "[concat(parameters('systemTopics_systemtopic_name'), '/iothubtotwins')]",
             "dependsOn": [
                 "[resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopics_systemtopic_name'))]",
-                "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_hcm_handson_name'), 'IoTHubtoTwins')]"
+                "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_handson_name'), 'IoTHubtoTwins')]"
             ],
             "properties": {
                 "destination": {
                     "properties": {
-                        "resourceId": "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_hcm_handson_name'), 'IoTHubtoTwins')]",
+                        "resourceId": "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_handson_name'), 'IoTHubtoTwins')]",
                         "maxEventsPerBatch": 1,
                         "preferredBatchSizeInKilobytes": 64
                     },
@@ -1242,66 +1109,21 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
             "apiVersion": "2022-01-01-preview",
-            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/', parameters('namespaces_evh_hcm_handson_name'), '/$Default')]",
+            "name": "[concat(parameters('namespaces_evh_handson_name'), '/', parameters('namespaces_evh_handson_name'), '/$Default')]",
             "location": "japaneast",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_handson_name'), parameters('namespaces_evh_handson_name'))]",
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_handson_name'))]"
             ],
             "properties": {}
         },
         {
-            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
-            "apiVersion": "2022-07-07",
-            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/0bed5e10-a114-4d44-a3bd-2e3a35f3d27f')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
-            ],
-            "properties": {
-                "principalId": "yahanda@microsoft.com",
-                "role": "User",
-                "principalType": "User",
-                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
-            }
-        },
-        {
-            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
-            "apiVersion": "2022-07-07",
-            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/225e34a8-c4b6-43ba-af97-1d10ca06b094')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
-            ],
-            "properties": {
-                "principalId": "Yasuhiro.Handa@microsoft.com",
-                "role": "Admin",
-                "principalType": "User",
-                "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3"
-            }
-        },
-        {
-            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
-            "apiVersion": "2022-07-07",
-            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/494f4379-a8e3-4c1e-93ab-e9f869438372')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
-            ],
-            "properties": {
-                "principalId": "c48c0825-7582-4d25-a11b-a9e9710920c5",
-                "role": "Admin",
-                "principalType": "App",
-                "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3"
-            }
-        },
-        {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default/azure-webjobs-hosts')]",
+            "name": "[concat(parameters('storageAccounts_adthandson_name'), '/default/azure-webjobs-hosts')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_hcmadthandson8256_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_adthandson_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_adthandson_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -1315,10 +1137,10 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default/azure-webjobs-secrets')]",
+            "name": "[concat(parameters('storageAccounts_adthandson_name'), '/default/azure-webjobs-secrets')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_hcmadthandson8256_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_adthandson_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_adthandson_name'))]"
             ],
             "properties": {
                 "immutableStorageWithVersioning": {
@@ -1327,83 +1149,6 @@
                 "defaultEncryptionScope": "$account-encryption-key",
                 "denyEncryptionScopeOverride": false,
                 "publicAccess": "None"
-            }
-        },
-        {
-            "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-            "apiVersion": "2022-05-01",
-            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default/func-hcm-handsonae0b')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_hcmadthandson8256_name'), 'default')]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
-            ],
-            "properties": {
-                "accessTier": "TransactionOptimized",
-                "shareQuota": 5120,
-                "enabledProtocols": "SMB"
-            }
-        },
-        {
-            "type": "Microsoft.DigitalTwins/digitalTwinsInstances/timeSeriesDatabaseConnections",
-            "apiVersion": "2022-05-31",
-            "name": "[concat(parameters('digitalTwinsInstances_adt_hcm_handson_name'), '/AdtAdxConnection')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('digitalTwinsInstances_adt_hcm_handson_name'))]",
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
-            ],
-            "properties": {
-                "connectionType": "AzureDataExplorer",
-                "adxEndpointUri": "https://adxhcmhandson.japaneast.kusto.windows.net",
-                "adxResourceId": "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
-                "adxDatabaseName": "historydb",
-                "adxTableName": "adt_dh_adt_hcm_handson_southeastasia",
-                "eventHubNamespaceResourceId": "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]",
-                "eventHubEndpointUri": "sb://evh-hcm-handson.servicebus.windows.net",
-                "eventHubEntityPath": "evh-hcm-handson",
-                "eventHubConsumerGroup": "$Default"
-            }
-        },
-        {
-            "type": "Microsoft.Kusto/Clusters/Databases/DataConnections",
-            "apiVersion": "2022-07-07",
-            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/adt_dt_CMYDC3rCrU9VYHxLWQHP8WrvZPdWGGI8W')]",
-            "location": "Japan East",
-            "dependsOn": [
-                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]"
-            ],
-            "kind": "EventHub",
-            "properties": {
-                "eventHubResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]",
-                "consumerGroup": "$Default",
-                "tableName": "adt_dh_adt_hcm_handson_southeastasia",
-                "mappingRuleName": "adt_dt_adt-hcm-handson_southeastasia_mapping",
-                "dataFormat": "MULTIJSON",
-                "eventSystemProperties": [],
-                "compression": "None",
-                "databaseRouting": "Single",
-                "retrievalStartDate": "2022-10-18T13:40:39.8954832Z"
-            }
-        },
-        {
-            "type": "Microsoft.Kusto/Clusters/Databases/EventHubConnections",
-            "apiVersion": "2018-09-07-preview",
-            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/adt_dt_CMYDC3rCrU9VYHxLWQHP8WrvZPdWGGI8W')]",
-            "location": "Japan East",
-            "dependsOn": [
-                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
-                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]"
-            ],
-            "kind": "EventHub",
-            "properties": {
-                "eventHubResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]",
-                "consumerGroup": "$Default",
-                "tableName": "adt_dh_adt_hcm_handson_southeastasia",
-                "mappingRuleName": "adt_dt_adt-hcm-handson_southeastasia_mapping",
-                "dataFormat": "MULTIJSON"
             }
         }
     ]
