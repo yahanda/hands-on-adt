@@ -1,0 +1,1410 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "IotHubs_iot_hcm_handson_connectionString": {
+            "type": "SecureString"
+        },
+        "IotHubs_iot_hcm_handson_containerName": {
+            "type": "SecureString"
+        },
+        "sites_func_hcm_handson_name": {
+            "defaultValue": "func-hcm-handson",
+            "type": "String"
+        },
+        "Clusters_adxhcmhandson_name": {
+            "defaultValue": "adxhcmhandson",
+            "type": "String"
+        },
+        "IotHubs_iot_hcm_handson_name": {
+            "defaultValue": "iot-hcm-handson",
+            "type": "String"
+        },
+        "systemTopics_systemtopic_name": {
+            "defaultValue": "systemtopic",
+            "type": "String"
+        },
+        "namespaces_evh_hcm_handson_name": {
+            "defaultValue": "evh-hcm-handson",
+            "type": "String"
+        },
+        "components_func_hcm_handson_name": {
+            "defaultValue": "func-hcm-handson",
+            "type": "String"
+        },
+        "serverfarms_ASP_HCMADTHandson_bc68_name": {
+            "defaultValue": "ASP-HCMADTHandson-bc68",
+            "type": "String"
+        },
+        "storageAccounts_hcmadthandson8256_name": {
+            "defaultValue": "hcmadthandson8256",
+            "type": "String"
+        },
+        "digitalTwinsInstances_adt_hcm_handson_name": {
+            "defaultValue": "adt-hcm-handson",
+            "type": "String"
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "defaultValue": "Application Insights Smart Detection",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___func_hcm_handson_name": {
+            "defaultValue": "failure anomalies - func-hcm-handson",
+            "type": "String"
+        },
+        "workspaces_DefaultWorkspace_180b8946_11f6_4b3d_a813_39be45ad51eb_EJP_externalid": {
+            "defaultValue": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/DefaultResourceGroup-EJP/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-180b8946-11f6-4b3d-a813-39be45ad51eb-EJP",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Devices/IotHubs",
+            "apiVersion": "2022-04-30-preview",
+            "name": "[parameters('IotHubs_iot_hcm_handson_name')]",
+            "location": "japaneast",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "ipFilterRules": [],
+                "eventHubEndpoints": {
+                    "events": {
+                        "retentionTimeInDays": 1,
+                        "partitionCount": 4
+                    }
+                },
+                "routing": {
+                    "endpoints": {
+                        "serviceBusQueues": [],
+                        "serviceBusTopics": [],
+                        "eventHubs": [],
+                        "storageContainers": [],
+                        "cosmosDBSqlCollections": []
+                    },
+                    "routes": [
+                        {
+                            "name": "RouteToEventGrid",
+                            "source": "DeviceMessages",
+                            "condition": "true",
+                            "endpointNames": [
+                                "eventgrid"
+                            ],
+                            "isEnabled": true
+                        }
+                    ],
+                    "fallbackRoute": {
+                        "name": "$fallback",
+                        "source": "DeviceMessages",
+                        "condition": "true",
+                        "endpointNames": [
+                            "events"
+                        ],
+                        "isEnabled": true
+                    }
+                },
+                "storageEndpoints": {
+                    "$default": {
+                        "sasTtlAsIso8601": "PT1H",
+                        "connectionString": "[parameters('IotHubs_iot_hcm_handson_connectionString')]",
+                        "containerName": "[parameters('IotHubs_iot_hcm_handson_containerName')]"
+                    }
+                },
+                "messagingEndpoints": {
+                    "fileNotifications": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "enableFileUploadNotifications": false,
+                "cloudToDevice": {
+                    "maxDeliveryCount": 10,
+                    "defaultTtlAsIso8601": "PT1H",
+                    "feedback": {
+                        "lockDurationAsIso8601": "PT1M",
+                        "ttlAsIso8601": "PT1H",
+                        "maxDeliveryCount": 10
+                    }
+                },
+                "features": "None",
+                "disableLocalAuth": false,
+                "allowedFqdnList": [],
+                "enableDataResidency": false
+            }
+        },
+        {
+            "type": "Microsoft.DigitalTwins/digitalTwinsInstances",
+            "apiVersion": "2022-05-31",
+            "name": "[parameters('digitalTwinsInstances_adt_hcm_handson_name')]",
+            "location": "southeastasia",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "privateEndpointConnections": [],
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[parameters('namespaces_evh_hcm_handson_name')]",
+            "location": "Japan East",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "properties": {
+                "minimumTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled",
+                "disableLocalAuth": false,
+                "zoneRedundant": true,
+                "isAutoInflateEnabled": false,
+                "maximumThroughputUnits": 0,
+                "kafkaEnabled": true
+            }
+        },
+        {
+            "type": "microsoft.insights/actionGroups",
+            "apiVersion": "2022-06-01",
+            "name": "[parameters('actionGroups_Application_Insights_Smart_Detection_name')]",
+            "location": "Global",
+            "properties": {
+                "groupShortName": "SmartDetect",
+                "enabled": true,
+                "emailReceivers": [],
+                "smsReceivers": [],
+                "webhookReceivers": [],
+                "eventHubReceivers": [],
+                "itsmReceivers": [],
+                "azureAppPushReceivers": [],
+                "automationRunbookReceivers": [],
+                "voiceReceivers": [],
+                "logicAppReceivers": [],
+                "azureFunctionReceivers": [],
+                "armRoleReceivers": [
+                    {
+                        "name": "Monitoring Contributor",
+                        "roleId": "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+                        "useCommonAlertSchema": true
+                    },
+                    {
+                        "name": "Monitoring Reader",
+                        "roleId": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+                        "useCommonAlertSchema": true
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[parameters('components_func_hcm_handson_name')]",
+            "location": "japaneast",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[parameters('workspaces_DefaultWorkspace_180b8946_11f6_4b3d_a813_39be45ad51eb_EJP_externalid')]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters",
+            "apiVersion": "2022-07-07",
+            "name": "[parameters('Clusters_adxhcmhandson_name')]",
+            "location": "Japan East",
+            "sku": {
+                "name": "Dev(No SLA)_Standard_E2a_v4",
+                "tier": "Basic",
+                "capacity": 1
+            },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "trustedExternalTenants": [
+                    {
+                        "value": "*"
+                    }
+                ],
+                "enableDiskEncryption": false,
+                "enableStreamingIngest": false,
+                "enablePurge": false,
+                "enableDoubleEncryption": false,
+                "engineType": "V3",
+                "acceptedAudiences": [],
+                "restrictOutboundNetworkAccess": "Disabled",
+                "allowedFqdnList": [],
+                "publicNetworkAccess": "Enabled",
+                "allowedIpRangeList": [],
+                "enableAutoStop": true,
+                "publicIPType": "IPv4"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2022-05-01",
+            "name": "[parameters('storageAccounts_hcmadthandson8256_name')]",
+            "location": "japaneast",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('serverfarms_ASP_HCMADTHandson_bc68_name')]",
+            "location": "Japan East",
+            "sku": {
+                "name": "Y1",
+                "tier": "Dynamic",
+                "size": "Y1",
+                "family": "Y",
+                "capacity": 0
+            },
+            "kind": "functionapp",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.EventGrid/systemTopics",
+            "apiVersion": "2022-06-15",
+            "name": "[parameters('systemTopics_systemtopic_name')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iot_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "source": "[resourceId('Microsoft.Devices/IotHubs', parameters('IotHubs_iot_hcm_handson_name'))]",
+                "topicType": "Microsoft.Devices.IoTHubs"
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/RootManageSharedAccessKey')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/eventhubs",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/', parameters('namespaces_evh_hcm_handson_name'))]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "messageRetentionInDays": 1,
+                "partitionCount": 1,
+                "status": "Active"
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/networkRuleSets",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/default')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "defaultAction": "Allow",
+                "virtualNetworkRules": [],
+                "ipRules": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/degradationindependencyduration')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationindependencyduration",
+                    "DisplayName": "Degradation in dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/degradationinserverresponsetime')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationinserverresponsetime",
+                    "DisplayName": "Degradation in server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/digestMailConfiguration')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "digestMailConfiguration",
+                    "DisplayName": "Digest Mail Configuration",
+                    "Description": "This rule describes the digest mail preferences",
+                    "HelpUrl": "www.homail.com",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_billingdatavolumedailyspikeextension')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_billingdatavolumedailyspikeextension",
+                    "DisplayName": "Abnormal rise in daily data volume (preview)",
+                    "Description": "This detection rule automatically analyzes the billing data generated by your application, and can warn you about an unusual increase in your application's billing costs",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/billing-data-volume-daily-spike.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_canaryextension')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_canaryextension",
+                    "DisplayName": "Canary extension",
+                    "Description": "Canary extension",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_exceptionchangeextension')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_exceptionchangeextension",
+                    "DisplayName": "Abnormal rise in exception volume (preview)",
+                    "Description": "This detection rule automatically analyzes the exceptions thrown in your application, and can warn you about unusual patterns in your exception telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/abnormal-rise-in-exception-volume.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_memoryleakextension')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_memoryleakextension",
+                    "DisplayName": "Potential memory leak detected (preview)",
+                    "Description": "This detection rule automatically analyzes the memory consumption of each process in your application, and can warn you about potential memory leaks or increased memory consumption.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/memory-leak.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_securityextensionspackage')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_securityextensionspackage",
+                    "DisplayName": "Potential security issue detected (preview)",
+                    "Description": "This detection rule automatically analyzes the telemetry generated by your application and detects potential security issues.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/application-security-detection-pack.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/extension_traceseveritydetector')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_traceseveritydetector",
+                    "DisplayName": "Degradation in trace severity ratio (preview)",
+                    "Description": "This detection rule automatically analyzes the trace logs emitted from your application, and can warn you about unusual patterns in the severity of your trace telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/degradation-in-trace-severity-ratio.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/longdependencyduration')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "longdependencyduration",
+                    "DisplayName": "Long dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/migrationToAlertRulesCompleted')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "migrationToAlertRulesCompleted",
+                    "DisplayName": "Migration To Alert Rules Completed",
+                    "Description": "A configuration that controls the migration state of Smart Detection to Smart Alerts",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": false,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": false,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/slowpageloadtime')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowpageloadtime",
+                    "DisplayName": "Slow page load time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_func_hcm_handson_name'), '/slowserverresponsetime')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowserverresponsetime",
+                    "DisplayName": "Slow server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2022-07-07",
+            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
+            ],
+            "kind": "ReadWrite",
+            "properties": {
+                "softDeletePeriod": "P365D",
+                "hotCachePeriod": "P31D"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "shareDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2022-03-01",
+            "name": "[parameters('sites_func_hcm_handson_name')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_HCMADTHandson_bc68_name'))]"
+            ],
+            "tags": {
+                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
+                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
+            },
+            "kind": "functionapp",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_func_hcm_handson_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_func_hcm_handson_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_ASP_HCMADTHandson_bc68_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 200,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": false,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "E3C972227B09CBB62D17D8AE144A1AC0160BA6C2B664DCACA14E9CC770C9EAC5",
+                "containerSize": 1536,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/ftp')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "tags": {
+                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
+                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/scm')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "tags": {
+                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
+                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
+            },
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/web')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "tags": {
+                "hidden-link: /app-insights-resource-id": "/subscriptions/180b8946-11f6-4b3d-a813-39be45ad51eb/resourceGroups/HCM-ADT-Handson/providers/microsoft.insights/components/func-hcm-handson",
+                "hidden-link: /app-insights-instrumentation-key": "87ed173f-7dec-4bbb-bfdf-21db625e1a60",
+                "hidden-link: /app-insights-conn-string": "InstrumentationKey=87ed173f-7dec-4bbb-bfdf-21db625e1a60;IngestionEndpoint=https://japaneast-1.in.applicationinsights.azure.com/;LiveEndpoint=https://japaneast.livediagnostics.monitor.azure.com/"
+            },
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$func-hcm-handson",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "cors": {
+                    "allowedOrigins": [
+                        "https://portal.azure.com"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "managedServiceIdentityId": 10349,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "functionAppScaleLimit": 200,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/09733a9594944c3ea743617c943582f4')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T12:54:40.0361757Z",
+                "end_time": "2022-10-18T12:54:41.523778Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/10a5f3090215439598ff6be336828d97')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T12:48:53.0783436Z",
+                "end_time": "2022-10-18T12:48:54.6721053Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/2f75ac456e214f4bb98f8541d42edf57')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-19T07:39:08.320964Z",
+                "end_time": "2022-10-19T07:39:09.8989992Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/52575615c5f843ac8fbd3650f7afcc55')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T12:33:03.6304507Z",
+                "end_time": "2022-10-18T12:33:05.2085589Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/599d6ab0cf5c43f1a223fcd3548ce587')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T12:20:54.2025459Z",
+                "end_time": "2022-10-18T12:20:56.1243815Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/970442422d8146658a28bfb4dbdd1b72')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T13:15:52.437087Z",
+                "end_time": "2022-10-18T13:15:54.3902493Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/de0a2b8129ee42c89366969771424297')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T12:44:02.2297768Z",
+                "end_time": "2022-10-18T12:44:03.933048Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/ed31f214bf6943a5b66f2f48ce5b0ed3')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T12:46:01.49502Z",
+                "end_time": "2022-10-18T12:46:03.5730874Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/f96aaff3222c49e39d286c118bdec1a4')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-19T08:39:57.4915387Z",
+                "end_time": "2022-10-19T08:39:58.8041483Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/fddc7a1ad3cb42a6bb33f37c2a85bcc9')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "VS Code",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2022-10-18T13:10:20.0128166Z",
+                "end_time": "2022-10-18T13:10:22.1066171Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/functions",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/IoTHubtoTwins')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "script_root_path_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/site/wwwroot/IoTHubtoTwins/",
+                "script_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/site/wwwroot/bin/Functions.dll",
+                "config_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/site/wwwroot/IoTHubtoTwins/function.json",
+                "test_data_href": "https://func-hcm-handson.azurewebsites.net/admin/vfs/data/Functions/sampledata/IoTHubtoTwins.dat",
+                "href": "https://func-hcm-handson.azurewebsites.net/admin/functions/IoTHubtoTwins",
+                "config": {},
+                "language": "DotNetAssembly",
+                "isDisabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2022-03-01",
+            "name": "[concat(parameters('sites_func_hcm_handson_name'), '/', parameters('sites_func_hcm_handson_name'), '.azurewebsites.net')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_func_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "siteName": "func-hcm-handson",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2021-04-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___func_hcm_handson_name')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]",
+                "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', parameters('components_func_hcm_handson_name'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[resourceId('microsoft.insights/actionGroups', parameters('actionGroups_Application_Insights_Smart_Detection_name'))]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
+            "apiVersion": "2022-06-15",
+            "name": "[concat(parameters('systemTopics_systemtopic_name'), '/iothubtotwins')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopics_systemtopic_name'))]",
+                "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_hcm_handson_name'), 'IoTHubtoTwins')]"
+            ],
+            "properties": {
+                "destination": {
+                    "properties": {
+                        "resourceId": "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_hcm_handson_name'), 'IoTHubtoTwins')]",
+                        "maxEventsPerBatch": 1,
+                        "preferredBatchSizeInKilobytes": 64
+                    },
+                    "endpointType": "AzureFunction"
+                },
+                "filter": {
+                    "includedEventTypes": [
+                        "Microsoft.Devices.DeviceCreated",
+                        "Microsoft.Devices.DeviceDeleted",
+                        "Microsoft.Devices.DeviceConnected",
+                        "Microsoft.Devices.DeviceDisconnected",
+                        "Microsoft.Devices.DeviceTelemetry"
+                    ],
+                    "enableAdvancedFilteringOnArrays": true
+                },
+                "labels": [],
+                "eventDeliverySchema": "EventGridSchema",
+                "retryPolicy": {
+                    "maxDeliveryAttempts": 30,
+                    "eventTimeToLiveInMinutes": 1440
+                }
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
+            "apiVersion": "2022-01-01-preview",
+            "name": "[concat(parameters('namespaces_evh_hcm_handson_name'), '/', parameters('namespaces_evh_hcm_handson_name'), '/$Default')]",
+            "location": "japaneast",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]",
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2022-07-07",
+            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/0bed5e10-a114-4d44-a3bd-2e3a35f3d27f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
+            ],
+            "properties": {
+                "principalId": "yahanda@microsoft.com",
+                "role": "User",
+                "principalType": "User",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2022-07-07",
+            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/225e34a8-c4b6-43ba-af97-1d10ca06b094')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
+            ],
+            "properties": {
+                "principalId": "Yasuhiro.Handa@microsoft.com",
+                "role": "Admin",
+                "principalType": "User",
+                "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2022-07-07",
+            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/494f4379-a8e3-4c1e-93ab-e9f869438372')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]"
+            ],
+            "properties": {
+                "principalId": "c48c0825-7582-4d25-a11b-a9e9710920c5",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default/azure-webjobs-hosts')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_hcmadthandson8256_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default/azure-webjobs-secrets')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_hcmadthandson8256_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+            "apiVersion": "2022-05-01",
+            "name": "[concat(parameters('storageAccounts_hcmadthandson8256_name'), '/default/func-hcm-handsonae0b')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_hcmadthandson8256_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_hcmadthandson8256_name'))]"
+            ],
+            "properties": {
+                "accessTier": "TransactionOptimized",
+                "shareQuota": 5120,
+                "enabledProtocols": "SMB"
+            }
+        },
+        {
+            "type": "Microsoft.DigitalTwins/digitalTwinsInstances/timeSeriesDatabaseConnections",
+            "apiVersion": "2022-05-31",
+            "name": "[concat(parameters('digitalTwinsInstances_adt_hcm_handson_name'), '/AdtAdxConnection')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DigitalTwins/digitalTwinsInstances', parameters('digitalTwinsInstances_adt_hcm_handson_name'))]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "properties": {
+                "connectionType": "AzureDataExplorer",
+                "adxEndpointUri": "https://adxhcmhandson.japaneast.kusto.windows.net",
+                "adxResourceId": "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
+                "adxDatabaseName": "historydb",
+                "adxTableName": "adt_dh_adt_hcm_handson_southeastasia",
+                "eventHubNamespaceResourceId": "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_hcm_handson_name'))]",
+                "eventHubEndpointUri": "sb://evh-hcm-handson.servicebus.windows.net",
+                "eventHubEntityPath": "evh-hcm-handson",
+                "eventHubConsumerGroup": "$Default"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/DataConnections",
+            "apiVersion": "2022-07-07",
+            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/adt_dt_CMYDC3rCrU9VYHxLWQHP8WrvZPdWGGI8W')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "kind": "EventHub",
+            "properties": {
+                "eventHubResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]",
+                "consumerGroup": "$Default",
+                "tableName": "adt_dh_adt_hcm_handson_southeastasia",
+                "mappingRuleName": "adt_dt_adt-hcm-handson_southeastasia_mapping",
+                "dataFormat": "MULTIJSON",
+                "eventSystemProperties": [],
+                "compression": "None",
+                "databaseRouting": "Single",
+                "retrievalStartDate": "2022-10-18T13:40:39.8954832Z"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/EventHubConnections",
+            "apiVersion": "2018-09-07-preview",
+            "name": "[concat(parameters('Clusters_adxhcmhandson_name'), '/historydb/adt_dt_CMYDC3rCrU9VYHxLWQHP8WrvZPdWGGI8W')]",
+            "location": "Japan East",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_adxhcmhandson_name'), 'historydb')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_adxhcmhandson_name'))]",
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]"
+            ],
+            "kind": "EventHub",
+            "properties": {
+                "eventHubResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_hcm_handson_name'), parameters('namespaces_evh_hcm_handson_name'))]",
+                "consumerGroup": "$Default",
+                "tableName": "adt_dh_adt_hcm_handson_southeastasia",
+                "mappingRuleName": "adt_dt_adt-hcm-handson_southeastasia_mapping",
+                "dataFormat": "MULTIJSON"
+            }
+        }
+    ]
+}
