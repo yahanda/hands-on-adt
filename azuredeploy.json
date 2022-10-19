@@ -2,14 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sites_func_handson_name": {
-            "defaultValue": "func-yourname-handson",
-            "type": "String"
-        },
-        "Clusters_adxhandson_name": {
-            "defaultValue": "adxyournamehandson",
-            "type": "String"
-        },
         "IotHubs_iot_handson_name": {
             "defaultValue": "iot-yourname-handson",
             "type": "String"
@@ -18,24 +10,16 @@
             "defaultValue": "systemtopic",
             "type": "String"
         },
+        "digitalTwinsInstances_adt_handson_name": {
+            "defaultValue": "adt-yourname-handson",
+            "type": "String"
+        },
         "namespaces_evh_handson_name": {
             "defaultValue": "evh-yourname-handson",
             "type": "String"
         },
-        "components_func_handson_name": {
-            "defaultValue": "func-yourname-handson",
-            "type": "String"
-        },
-        "serverfarms_ASP_ADTHandson_name": {
-            "defaultValue": "ASP-yournameADTHandson",
-            "type": "String"
-        },
-        "storageAccounts_adthandson_name": {
-            "defaultValue": "yournameadthandson",
-            "type": "String"
-        },
-        "digitalTwinsInstances_adt_handson_name": {
-            "defaultValue": "adt-yourname-handson",
+        "Clusters_adxhandson_name": {
+            "defaultValue": "adxyournamehandson",
             "type": "String"
         }
     },
