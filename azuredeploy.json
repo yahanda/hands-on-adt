@@ -166,52 +166,6 @@
                 "softDeletePeriod": "P365D",
                 "hotCachePeriod": "P31D"
             }
-        },
-        {
-            "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-            "apiVersion": "2022-06-15",
-            "name": "[concat(parameters('systemTopics_systemtopic_name'), '/iothubtotwins')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopics_systemtopic_name'))]",
-                "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_handson_name'), 'IoTHubtoTwins')]"
-            ],
-            "properties": {
-                "destination": {
-                    "properties": {
-                        "resourceId": "[resourceId('Microsoft.Web/sites/functions', parameters('sites_func_handson_name'), 'IoTHubtoTwins')]",
-                        "maxEventsPerBatch": 1,
-                        "preferredBatchSizeInKilobytes": 64
-                    },
-                    "endpointType": "AzureFunction"
-                },
-                "filter": {
-                    "includedEventTypes": [
-                        "Microsoft.Devices.DeviceCreated",
-                        "Microsoft.Devices.DeviceDeleted",
-                        "Microsoft.Devices.DeviceConnected",
-                        "Microsoft.Devices.DeviceDisconnected",
-                        "Microsoft.Devices.DeviceTelemetry"
-                    ],
-                    "enableAdvancedFilteringOnArrays": true
-                },
-                "labels": [],
-                "eventDeliverySchema": "EventGridSchema",
-                "retryPolicy": {
-                    "maxDeliveryAttempts": 30,
-                    "eventTimeToLiveInMinutes": 1440
-                }
-            }
-        },
-        {
-            "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-            "apiVersion": "2022-01-01-preview",
-            "name": "[concat(parameters('namespaces_evh_handson_name'), '/', parameters('namespaces_evh_handson_name'), '/$Default')]",
-            "location": "japaneast",
-            "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaces_evh_handson_name'), parameters('namespaces_evh_handson_name'))]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces_evh_handson_name'))]"
-            ],
-            "properties": {}
         }
     ]
 }
